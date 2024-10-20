@@ -1,0 +1,117 @@
+        -:    0:Source:Graph.cpp
+        -:    0:Graph:dijkstra_program-Graph.gcno
+        -:    0:Data:dijkstra_program-Graph.gcda
+        -:    0:Runs:1
+        -:    1:#include <iostream>
+        -:    2:#include <vector>
+        -:    3:#include <limits.h>
+        -:    4:
+        -:    5:using namespace std;
+        -:    6:
+        -:    7:// A utility function to find the vertex with minimum
+        -:    8:// distance value, from the set of vertices not yet included
+        -:    9:// in shortest path tree
+        3:   10:int minDistance(vector<double>& dist, vector<bool>& sptSet, int N)
+        -:   11:{
+        3:   12:    int min = INT_MAX, min_index;
+        -:   13:
+       15:   14:    for (int v = 0; v < N; v++) {
+       12:   15:        if (!sptSet[v] && dist[v] <= min) {
+        4:   16:            min = dist[v], min_index = v;
+        -:   17:        }
+        -:   18:    }
+        -:   19:
+        3:   20:    return min_index;
+        -:   21:}
+        -:   22:
+        -:   23:// A utility function to print the constructed distance
+        1:   24:void printSolution(vector<double> dist, int N)
+        -:   25:{
+        1:   26:    cout << "Vertex \t Distance from Source" << endl;
+        5:   27:    for (int i = 0; i < N; i++) {
+        4:   28:        cout << i << " \t\t\t\t" << dist[i] << endl;
+        -:   29:    }
+        1:   30:}
+        -:   31:
+        -:   32:// Function that implements Dijkstra's single source
+        -:   33:// shortest path algorithm for a graph represented using
+        -:   34:// adjacency matrix representation
+        1:   35:void dijkstra(vector<vector<double>>& graph, int src, int N)
+        -:   36:{
+        1:   37:    vector<double> dist(N, INT_MAX); // dist[i] will hold the shortest distance from src to i
+        1:   38:    vector<bool> sptSet(N, false); // sptSet[i] will be true if vertex i is included in shortest path
+        -:   39:
+        1:   40:    dist[src] = 0;    // Distance of source vertex from itself is 0
+        -:   41:
+        -:   42:    // Find shortest path for all vertices
+        4:   43:    for (int count = 0; count < N - 1; count++) {
+        3:   44:        int u = minDistance(dist, sptSet, N); // Pick the minimum distance vertex
+        3:   45:        sptSet[u] = true;
+        -:   46:
+       15:   47:        for (int v = 0; v < N; v++) {
+       12:   48:            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]) {
+        3:   49:                dist[v] = dist[u] + graph[u][v];
+        -:   50:            }
+        -:   51:        }
+        -:   52:    }
+        -:   53:    // Print the constructed distance array
+        1:   54:    printSolution(dist, N);
+        1:   55:}
+        -:   56:
+        1:   57:bool getGraph(vector<vector<double>>& graph, int& N) {
+        1:   58:    cout << "Please enter the graph dimension (N*N): \nN = ";
+        1:   59:    cin >> N;
+        -:   60:
+        1:   61:    if (N <= 0) {
+    #####:   62:        cout << "Error: Invalid graph size (N must be greater than 0)." << endl;
+    #####:   63:        return false;
+        -:   64:    }
+        -:   65:
+        1:   66:    graph.resize(N, vector<double>(N, 0));
+        -:   67:
+        5:   68:    for (int i = 0; i < N; i++) {
+       20:   69:        for (int j = 0; j < N; j++) {
+       16:   70:            cout << "Enter value for edge (" << i << "," << j << "): ";
+       16:   71:            cin >> graph[i][j];
+        -:   72:
+       16:   73:            if (graph[i][j] < 0) {
+    #####:   74:                cout << "Error: Dijkstra's algorithm does not support negative weights!" << endl;
+    #####:   75:                return false;
+        -:   76:            }
+        -:   77:        }
+        -:   78:    }
+        1:   79:    return true;
+        -:   80:}
+        -:   81:
+        1:   82:int main() {
+        -:   83:    
+        -:   84:    int N, src;
+        1:   85:    vector<vector<double>> graph;
+        -:   86:
+        -:   87:    // Get the graph first
+        1:   88:    if (!getGraph(graph, N)) {
+    #####:   89:        return 1; // Exit if invalid graph
+        -:   90:    }
+        -:   91:
+        -:   92:    // Now get the source vertex after reading the graph
+        1:   93:    cout << "Enter source vertex (0 to " << N-1 << "): ";
+        1:   94:    cin >> src;
+        -:   95:
+        1:   96:    if (src < 0 || src >= N) {
+    #####:   97:        cerr << "Error: Invalid source vertex." << endl;
+    #####:   98:        return 1;
+        -:   99:    }
+        -:  100:
+        -:  101:    // Run Dijkstra's algorithm
+        1:  102:    dijkstra(graph, src, N);
+        -:  103:
+        1:  104:    return 0;
+        1:  105:}
+        -:  106:
+        -:  107:
+        -:  108:
+        -:  109:
+        -:  110:
+        -:  111:
+        -:  112:
+        -:  113:// Part of the code is base on shivanisinghss2110 code from "greekforgreeks" for dijkstra's algorithm
