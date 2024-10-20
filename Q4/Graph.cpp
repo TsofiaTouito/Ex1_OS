@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 // A utility function to find the vertex with minimum
 // distance value, from the set of vertices not yet included
 // in shortest path tree
@@ -13,7 +14,8 @@ int minDistance(vector<double>& dist, vector<bool>& sptSet, int N)
 
     for (int v = 0; v < N; v++) {
         if (!sptSet[v] && dist[v] <= min) {
-            min = dist[v], min_index = v;
+            min = dist[v];
+            min_index = v;
         }
     }
 
@@ -21,11 +23,16 @@ int minDistance(vector<double>& dist, vector<bool>& sptSet, int N)
 }
 
 // A utility function to print the constructed distance
+// If a vertex has distance INT_MAX, it means there's no path from the source
 void printSolution(vector<double> dist, int N)
 {
     cout << "Vertex \t Distance from Source" << endl;
     for (int i = 0; i < N; i++) {
-        cout << i << " \t\t\t\t" << dist[i] << endl;
+        if (dist[i] == INT_MAX) {
+            cout << i << " \t\t\t\t" << "No Path" << endl;
+        } else {
+            cout << i << " \t\t\t\t" << dist[i] << endl;
+        }
     }
 }
 
@@ -35,21 +42,29 @@ void printSolution(vector<double> dist, int N)
 void dijkstra(vector<vector<double>>& graph, int src, int N)
 {
     vector<double> dist(N, INT_MAX); // dist[i] will hold the shortest distance from src to i
-    vector<bool> sptSet(N, false); // sptSet[i] will be true if vertex i is included in shortest path
+    vector<bool> sptSet(N, false);   // sptSet[i] will be true if vertex i is included in shortest path
 
     dist[src] = 0;    // Distance of source vertex from itself is 0
 
     // Find shortest path for all vertices
     for (int count = 0; count < N - 1; count++) {
         int u = minDistance(dist, sptSet, N); // Pick the minimum distance vertex
-        sptSet[u] = true;
 
+        // If u is still INT_MAX, it means no more vertices are reachable
+        if (dist[u] == INT_MAX) {
+            break;
+        }
+
+        sptSet[u] = true; // Mark the picked vertex as processed
+
+        // Update dist value of the adjacent vertices of the picked vertex
         for (int v = 0; v < N; v++) {
             if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]) {
                 dist[v] = dist[u] + graph[u][v];
             }
         }
     }
+
     // Print the constructed distance array
     printSolution(dist, N);
 }
@@ -80,7 +95,7 @@ bool getGraph(vector<vector<double>>& graph, int& N) {
 }
 
 int main() {
-    
+
     int N, src;
     vector<vector<double>> graph;
 
