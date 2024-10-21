@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-
+#include <chrono> 
 
 using namespace std;
 
@@ -11,7 +11,17 @@ int randGen(int min , int max ){
 }
 
 
-//Max Sub-array in complexity of O(n^3)
+
+void genRandArray(int arr[], int size){
+
+    for(int i = 0 ; i < size ; i++){
+        arr[i] = randGen(-25, 75);
+    }
+}
+
+
+
+// Time complexity of the algorithm is : O(n^3)
 int MaxSubArray(int arr[], int size){
 
     int max_sum = 0;
@@ -31,6 +41,7 @@ int MaxSubArray(int arr[], int size){
 }
 
 
+
 void printArray(int arr[], int size){
 
     cout << "[";
@@ -45,8 +56,6 @@ void printArray(int arr[], int size){
 
     cout << "]" << endl;;
 }
-
-
 
 
 
@@ -69,13 +78,9 @@ int main(int args, char* argv[]){
     // Initialize the random number generator with the seed
     srand(seed);  
 
-    int min = -25;
-    int max = 75;
 
     int arr[size];
-    for(int i = 0 ; i < size ; i++){
-        arr[i] = randGen(min, max);
-    }
+    genRandArray(arr, size);
     
     cout <<"The values of the calculated array :" << endl;
     printArray(arr, size);
